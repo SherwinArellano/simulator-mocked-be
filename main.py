@@ -24,7 +24,27 @@ class Operation(BaseModel):
     operation_total_time: int
 
 
+class OperationStatus(BaseModel):
+    operation_id: str  # e.g. "AX5T1S-112"
+    status_code: str  # e.g. "01" activated, "02" disactivated, "03" anomaly
+    description: str | None  # used when there's an anomaly
+
+
+STATUS_CODE_MAP: dict[str, str] = {
+    "01": "activated",
+    "02": "disactivated",
+    "03": "anomaly",
+}
+
+
 @app.post("/api/operations")
 async def create_operation(operation: Operation):
-    print(f"Received track: {operation}")
-    return {"status": "ok", "received": operation.operation_id}
+    print(f"Created operation: {operation}")
+    return {"status": "ok"}
+
+
+@app.put("/api/operations/{operation_id}")
+async def update_operation(operation_id: str, status: OperationStatus):
+    op_msg = STATUS_CODE_MAP.get(status.status_code, "unknown")
+    print(f"Operation {operation_id}: {op_msg}")
+    return {"status": "ok"}
