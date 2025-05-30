@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
 app = FastAPI()
@@ -25,6 +25,6 @@ class Operation(BaseModel):
 
 
 @app.post("/api/operations")
-async def receive_track(operation: Operation):
+async def create_operation(operation: Operation):
     print(f"Received track: {operation}")
     return {"status": "ok", "received": operation.operation_id}
